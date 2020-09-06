@@ -4,17 +4,21 @@ Embeddable vanilla JS compiler for packaging static pages.
 
 This compiler uses the global variable COMPILER.
 
-### Parameters
+### parameters
 
 *strings*
 
 `COMPILER.name:`      Project name.
+
 `COMPILER.version:`   Project version.
 
 `COMPILER.js.name:`   Javascript export path name.
+
 `COMPILER.js.path:`   Javascript Package export path.
 
+
 `COMPILER.css.name:`  Javascript export path name.
+
 `COMPILER.css.path:`  Package export path.
 
 `COMPILER.img.path:`  Image export path.
