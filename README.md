@@ -1,8 +1,38 @@
 ### compiler
 
-Embeddable vanilla JS compiler for packaging static pages.
+A simple lightweight embeddable vanilla JS compiler for packaging static pages.
 
 This compiler uses the global variable COMPILER.
+
+### installation
+
+The compiler currently needs to be embedded in the `body` of the document.
+In order to capture the original html state for packaging it is recommended to embed the compiler js file before any other document modifiying scripts.
+A Head and Body element mutation observer monitors added and changed elements as a fallback.
+
+`<body>
+
+  <script src="compiler.min.js" class="COMPILER_IGNORE"></script>
+
+  <!-- SCRIPTS TO BE COMPILED -->
+  
+  <script src="lib.js"></script>
+  <script src="app.js"></script>
+
+</body>`
+
+### compiling
+
+Compiling functions can be run through a browser developer command line, an inline html script, or an embedded script.
+
+`
+COMPILER.name = 'Project'; // Set the package name.
+COMPILER.version = 0.1; // Set the package version name.
+
+COMPILER.compile.package(); // Exports a ZIP file with all files merged.
+`
+
+A list of all compile functions are listed further in the documentation.
 
 ### parameters
 
@@ -41,9 +71,11 @@ Generates an index.html file with minified script, link, and img paths.
 
 Consolidates and exports all non-inline `<script>` elements.
 
-`COMPILER.combine.css()`
+`COMPILER.compile.css()`
 
 Consolidates and exports all non-inline `<link rel="stylesheet">` elements.
+
+`COMPILER.combine()`
 
 Combines all `<script>` elements with the `.COMPILER_COMBINE` class.
 
