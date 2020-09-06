@@ -1,6 +1,25 @@
-const OBSERVER = new MutationObserver( OBSERVE );
+// Store static head element;
 
-OBSERVER.observe(
+const HEAD = document.head.cloneNode([true]);
+const BODY = document.body.cloneNode([true]);
+
+const HEAD_OBSERVER = new MutationObserver( OBSERVE );
+const BODY_OBSERVER = new MutationObserver( OBSERVE );
+
+HEAD_OBSERVER.observe(
+
+	document.head,
+	{
+
+		attributes: true,
+		childList: true,
+		subtree: true
+
+	}
+
+);
+
+BODY_OBSERVER.observe(
 
 	document.body,
 	{
@@ -14,8 +33,6 @@ OBSERVER.observe(
 
 function OBSERVE( event ){
 
-	console.log( event );
-
 	for( let i = 0; i < event.length; i++ ){
 
 		if( event[i].type === 'childList' ){
@@ -24,13 +41,9 @@ function OBSERVE( event ){
 
 				if( event[i].addedNodes[a].nodeType === 1 ){
 					
-					console.log( event[i].addedNodes[a].tagName );
-
 					if( event[i].addedNodes[a].tagName === 'IMG' ){
 
-					console.log( event[i].addedNodes[a].tagName );
-
-					COMPILER.img.array.push( event[i].addedNodes[a] );
+						COMPILER.img.array.push( event[i].addedNodes[a] );
 
 					}
 
@@ -70,6 +83,15 @@ const COMPILER = {
 	quote: String.fromCharCode(39),
 	encapsulate: false,
 	closure: false,
+
+	manifest: {
+
+		name: 'manifest.json',
+		path: '',
+		file: '',
+		source: '',
+
+	},
 
 	index: {
 
@@ -114,7 +136,8 @@ COMPILER.compile = {}
 
 COMPILER.compile.package = function( step = 0 ){
 
-	OBSERVER.disconnect();
+	HEAD_OBSERVER.disconnect();
+	BODY_OBSERVER.disconnect();
 
 	switch( step ){
 
@@ -165,17 +188,32 @@ COMPILER.compile.package = function( step = 0 ){
 
 		case( 4 ):
 
+			COMPILER.compile.manifest(
+
+				function(){ COMPILER.compile.package( 5 ) },
+				false
+
+			)
+
+		break;
+
+		case( 5 ):
+
 			let name = COMPILER.name + '_' + COMPILER.version() + '.zip'
 
 			let zip = new JSZip();
+               
+            let path = zip.folder( COMPILER.name );
 
-			zip.file( COMPILER.index.name, COMPILER.index.source );
+			path.file( COMPILER.index.name, COMPILER.index.source );
 
-			zip.file( COMPILER.css.path + COMPILER.css.name, COMPILER.css.source );
+			path.file( 'manifest.json', COMPILER.manifest.source );
 
-			zip.file( COMPILER.js.path + COMPILER.js.name, COMPILER.js.source );
+			path.file( COMPILER.css.path + COMPILER.css.name, COMPILER.css.source );
 
-			let img = zip.folder("img");
+			path.file( COMPILER.js.path + COMPILER.js.name, COMPILER.js.source );
+
+			let img = path.folder("img");
 
 			console.log( COMPILER.img.blob );
 
@@ -321,7 +359,7 @@ COMPILER.compile.index = function( callback = function(){}, save = true ){
 
 	source += enter;
 
-	source += '<html lang="en" >'
+	source += '<html lang="en">'
 	
 	source += enter;
 
@@ -329,15 +367,23 @@ COMPILER.compile.index = function( callback = function(){}, save = true ){
 
 	// Remove styles from head element.
 
-	let link = document.head.getElementsByTagName('link');
+	let link = HEAD.getElementsByTagName('link');
 	
 	for ( let i = 0; i < link.length; i++ ){
 
-		if( link[i].rel === 'stylesheet' ) document.head.removeChild( link[i] );
+		if( link[i].rel === 'stylesheet' ){
+
+            console.log( link[i] );
+
+			HEAD.removeChild( link[i] );
+
+			console.log( HEAD )
+
+		}
 
 	}
 
-	let head = document.head.innerHTML;
+	let head = HEAD.innerHTML;
 
 	source += head;
 
@@ -483,7 +529,7 @@ COMPILER.compile.css = function( callback = function(){}, save = true, index = 0
 
 }
 
-COMPILER.compile.js = function( callback = {}, save = true, index = 0, source = '' ){
+COMPILER.compile.js = function( callback = function(){}, save = true, index = 0, source = '' ){
 
 	let array = document.body.getElementsByTagName('script');
 
@@ -545,6 +591,57 @@ COMPILER.compile.js = function( callback = {}, save = true, index = 0, source = 
 	}
 
 	return 'COMPILING SCRIPTS...'
+
+}
+
+COMPILER.compile.manifest = function( callback = function(){}, save = true ){
+
+	let src = ''
+
+	let link = document.getElementsByTagName( 'link' );
+
+	for( let i in link ){
+
+		if( link[i].rel === 'manifest' ) src = link[i].href;
+
+	}
+
+	let source = ''
+
+	let frame = document.createElement( 'iframe' );
+
+	frame.id = 'COMPILER_FRAME';
+
+	document.body.appendChild( frame );
+
+	frame.src = src;
+
+	frame.onload = function(){
+
+		let frame = document.getElementById( 'COMPILER_FRAME' );
+
+		source += frame.contentWindow.document.body.innerText;
+
+		source += String.fromCharCode(13);
+
+		document.body.removeChild( frame );
+
+		COMPILER.manifest.source = source;
+
+		COMPILER.js.file = COMPILER.export( source, COMPILER.manifest.name, save );
+
+		callback();
+
+		return source;
+
+	}
+
+	return 'MANIFEST DESTINY! :D'
+}
+
+COMPILER.combine = function( array = [], iterator = 0 ){
+
+	
 
 }
 
