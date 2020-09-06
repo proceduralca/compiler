@@ -25,7 +25,7 @@ This compiler uses the global variable COMPILER.
 
 *booleans*
 
-`COMPILER.scope:`     Wraps all code in an anonymous function, preventing variables to be accessible globally. 
+`COMPILER.scope:`     If `true` all compiled code is wrapped in an anonymous function preventing variables to be accessible globally. 
 
 ### functions
 
