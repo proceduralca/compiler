@@ -81,8 +81,8 @@ const COMPILER = {
 
 	enter: String.fromCharCode(10),
 	quote: String.fromCharCode(39),
-	encapsulate: false,
-	closure: false,
+	
+	closure: true,
 
 	manifest: {
 
@@ -531,6 +531,8 @@ COMPILER.compile.css = function( callback = function(){}, save = true, index = 0
 
 COMPILER.compile.js = function( callback = function(){}, save = true, index = 0, source = '' ){
 
+    if( index === 0 && COMPILER.closure ) source += '(function(){'
+
 	let array = document.body.getElementsByTagName('script');
 
 	let scripts = [];
@@ -574,6 +576,8 @@ COMPILER.compile.js = function( callback = function(){}, save = true, index = 0,
 			);
 
 		} else if( index === scripts.length-1 ){
+
+            if( COMPILER.closure ) source += '})();'
 
 			source = COMPILER.whitespace( source );
 
