@@ -2,13 +2,13 @@
 
 A simple lightweight embeddable vanilla JS compiler for packaging static pages.
 
-This compiler uses the global variable COMPILER.
+This compiler uses the global variable `COMPILER`.
 
 ### installation
 
 The compiler currently needs to be embedded in the `body` of the document.
 In order to capture the original html state for packaging it is recommended to embed the compiler js file before any other document modifiying scripts.
-A Head and Body element mutation observer monitors added and changed elements as a fallback.
+Mutation observers monitor added and changed elements as a fallback.
 
 ```
 <body>
