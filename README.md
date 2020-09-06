@@ -55,14 +55,14 @@ Flags elements to be ignored when compiling js, css, or package.
 
 `.COMPILER_COMBINE`
 
-Flags elements that need to be combined using the `COMPILER.combine()` utility.
+Flags elements that need to be combined using the `COMPILER.combine()` utility. This overrides the `.COMPILER_IGNORE` flag.
 
 ### limitations
 
 * The code is not minified or optimized, just combined.
 * Only compile non-inline and local files.
 * Images must be appended to the document at some point before compiling in order to be added to the package.
-* *Images can be removed immediatley after. Image dynamic image data is captured using Mutation Observers.*
+*Images can be removed immediatley after. Image dynamic image data is captured using Mutation Observers.*
 * Images are saved as non-compressed png, even if the original is compressed.
 
 ### future
