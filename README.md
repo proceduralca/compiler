@@ -25,8 +25,7 @@ A Head and Body element mutation observer monitors added and changed elements as
 
 Compiling functions can be run through a browser developer command line, an inline html script, or an embedded script.
 
-`
-COMPILER.name = 'Project'; // Set the package name.
+`COMPILER.name = 'Project'; // Set the package name.
 COMPILER.version = 0.1; // Set the package version name.
 
 COMPILER.compile.package(); // Exports a ZIP file with all files merged.
