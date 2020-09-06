@@ -10,7 +10,8 @@ The compiler currently needs to be embedded in the `body` of the document.
 In order to capture the original html state for packaging it is recommended to embed the compiler js file before any other document modifiying scripts.
 A Head and Body element mutation observer monitors added and changed elements as a fallback.
 
-`<body>
+```
+<body>
 
   <script src="compiler.min.js" class="COMPILER_IGNORE"></script>
 
@@ -19,17 +20,19 @@ A Head and Body element mutation observer monitors added and changed elements as
   <script src="lib.js"></script>
   <script src="app.js"></script>
 
-</body>`
+</body>
+```
 
 ### compiling
 
 Compiling functions can be run through a browser developer command line, an inline html script, or an embedded script.
 
-`COMPILER.name = 'Project'; // Set the package name.
+```
+COMPILER.name = 'Project'; // Set the package name.
 COMPILER.version = 0.1; // Set the package version name.
 
 COMPILER.compile.package(); // Exports a ZIP file with all files merged.
-`
+```
 
 A list of all compile functions are listed further in the documentation.
 
