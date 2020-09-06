@@ -67,22 +67,22 @@ const COMPILER = {
 
 		let date = new Date();
 
-		let yyy = date.getYear().toString(); 
-		let mm  = date.getMonth().toString();
-		let dd  = date.getDay().toString();
+		let yy  = date.getYear().toString().substring(1); 
+		let mm  = ( date.getMonth() + 1 ).toString();
+		let dd  = date.getDate().toString();
 		let hh	= date.getHours().toString
 
 		if( mm.length < 2 ) mm = '0'+ mm;
 		if( dd.length < 2 ) dd = '0'+ dd;
 
-		return yyy + '.' + mm + '.' + dd;
+		return yy + '.' + mm + '.' + dd;
 
 	},
 
 	enter: String.fromCharCode(10),
 	quote: String.fromCharCode(39),
 	
-	closure: true,
+	closure: false,
 
 	manifest: {
 
@@ -465,7 +465,7 @@ COMPILER.compile.index = function( callback = function(){}, save = true ){
 
 }
 
-COMPILER.compile.css = function( callback = function(){}, save = true, index = 0, source = '' ){
+COMPILER.compile.css = function( callback = function(){}, save = true, iterator = 0, source = '' ){
 
 	let link = document.head.getElementsByTagName('link');
 
@@ -485,7 +485,7 @@ COMPILER.compile.css = function( callback = function(){}, save = true, index = 0
 
 		document.body.appendChild( frame );
 
-		frame.src = styles[ index ].href;
+		frame.src = styles[ iterator ].href;
 
 		frame.onload = function(){
 
@@ -497,16 +497,16 @@ COMPILER.compile.css = function( callback = function(){}, save = true, index = 0
 
 			document.body.removeChild( frame );
 
-			if( index < styles.length-1 ){
+			if( iterator < styles.length-1 ){
 
 				window.setTimeout(
 
-					function(){ COMPILER.compile.css( callback, save, index +v1, source ) },
+					function(){ COMPILER.compile.css( callback, save, iterator + 1, source ) },
 					0
 
 				);
 
-			} else if( index === styles.length-1 ){
+			} else if( iterator === styles.length-1 ){
 
 				source = COMPILER.whitespace( source );
 
@@ -529,24 +529,37 @@ COMPILER.compile.css = function( callback = function(){}, save = true, index = 0
 
 }
 
-COMPILER.compile.js = function( callback = function(){}, save = true, index = 0, source = '' ){
+COMPILER.compile.js = function( callback = function(){}, save = true, iterator = 0, source = '', scripts = [] ){
 
-    if( index === 0 && COMPILER.closure ) source += '(function(){'
+    if( iterator === 0 ){
 
 	let array = document.body.getElementsByTagName('script');
 
-	let scripts = [];
+        if( COMPILER.closure ) source += '(function(){'
 
-	let i = 0;
+		for( let i = 0; i < array.length; i++ ){
 
-	for( let i = 0; i < array.length; i++ ){
+            let ignore = false;
 
-		if( array[ i ].className !== 'COMPILER_IGNORE' ){
+		for( let l = 0; l < array[i].classList.length; l++ ){
 
-			scripts.push( array[ i ] );
-		
+			if( array[ i ].classList[l] === 'COMPILER_IGNORE' ){
+
+				ignore = true;
+
+			}
+
 		}
-	}
+
+			if( !ignore ){
+
+                scripts.push( array[ i ] );
+
+			}
+
+		}
+
+    }
 
 	let frame = document.createElement( 'iframe' );
 
@@ -554,7 +567,7 @@ COMPILER.compile.js = function( callback = function(){}, save = true, index = 0,
 
 	document.body.appendChild( frame );
 
-	frame.src = scripts[ index ].src;
+	frame.src = scripts[ iterator ].src;
 
 	frame.onload = function(){
 
@@ -566,16 +579,16 @@ COMPILER.compile.js = function( callback = function(){}, save = true, index = 0,
 
 		document.body.removeChild( frame );
 
-		if( index < scripts.length-1 ){
+		if( iterator < scripts.length-1 ){
 
 			window.setTimeout(
 
-				function(){ COMPILER.compile.js( callback, save, index +1, source ); },
+				function(){ COMPILER.compile.js( callback, save, iterator + 1, source, scripts ); },
 				0
 
 			);
 
-		} else if( index === scripts.length-1 ){
+		} else if( iterator === scripts.length-1 ){
 
             if( COMPILER.closure ) source += '})();'
 
@@ -643,9 +656,73 @@ COMPILER.compile.manifest = function( callback = function(){}, save = true ){
 	return 'MANIFEST DESTINY! :D'
 }
 
-COMPILER.combine = function( array = [], iterator = 0 ){
+COMPILER.combine = function( name = 'lib', array = [], iterator = 0, source = '' ){
 
-	
+    if( iterator === 0 ){
+
+        if( COMPILER.closure ) source += '(function(){'
+
+		for( let i = 0; i < document.scripts.length; i++ ){
+		for( let l in document.scripts[i].classList ){
+
+			if(document.scripts[i].classList[l] === 'COMPILER_COMBINE' ){
+
+				array.push( document.scripts[i] );
+
+			}
+
+		}
+		}
+
+    }
+
+	let frame = document.createElement( 'iframe' );
+
+	frame.id = 'COMPILER_FRAME';
+
+	document.body.appendChild( frame );
+
+	frame.src = array[ iterator ].src;
+
+	frame.onload = function(){
+
+		let frame = document.getElementById( 'COMPILER_FRAME' );
+
+		source += frame.contentWindow.document.body.innerText;
+
+		source += String.fromCharCode(13);
+
+		document.body.removeChild( frame );
+
+		if( iterator < array.length-1 ){
+
+			window.setTimeout(
+
+				function(){ COMPILER.combine( name + '.js', array, iterator +1, source ); },
+				0
+
+			);
+
+		} else if( iterator === array.length-1 ){
+
+            if( COMPILER.closure ) source += '})();'
+
+			source = COMPILER.whitespace( source );
+
+			COMPILER.js.file = COMPILER.export( source, name, true );
+
+			console.log('COMPILING SCRIPTS COMPLETE. THAT SHOULD HELP ;)')
+
+			COMPILER.js.source = source;
+
+			return source;
+
+		}
+	}
+
+	return 'COMPILING SCRIPTS...'
+
+	iterator++;
 
 }
 
