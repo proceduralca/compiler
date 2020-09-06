@@ -12,16 +12,16 @@ This compiler uses the global variable COMPILER.
 
 `COMPILER.version:`   Project version.
 
-`COMPILER.js.name:`   Javascript export path name.
+`COMPILER.js.name:`   Javascript export file name.
 
-`COMPILER.js.path:`   Javascript Package export path.
+`COMPILER.js.path:`   Javascript package export path.
 
 
-`COMPILER.css.name:`  Javascript export path name.
+`COMPILER.css.name:`  CSS export file name.
 
-`COMPILER.css.path:`  Package export path.
+`COMPILER.css.path:`  CSS package export path.
 
-`COMPILER.img.path:`  Image export path.
+`COMPILER.img.path:`  Image package export path.
 
 *booleans*
 
