@@ -1,9 +1,12 @@
-# compiler
-Embedded vanilla JS compiler for packaging static pages.
+### compiler
 
-The compiler uses the global variable COMPILER to call functions.
+Embeddable vanilla JS compiler for packaging static pages.
 
-# Parameters
+This compiler uses the global variable COMPILER.
+
+### Parameters
+
+*strings*
 
 `COMPILER.name:`      Project name.
 `COMPILER.version:`   Project version.
@@ -16,7 +19,11 @@ The compiler uses the global variable COMPILER to call functions.
 
 `COMPILER.img.path:`  Image export path.
 
-# Functions:
+*booleans*
+
+`COMPILER.scope:`     Wraps all code in an anonymous function, preventing variables to be accessible globally. 
+
+### functions
 
 `COMPILER.compile.package()`
 
@@ -36,7 +43,7 @@ Consolidates and exports all non-inline `<link rel="stylesheet">` elements.
 
 Combines all `<script>` elements with the `.COMPILER_COMBINE` class.
 
-# CSS Flags
+### css flags
 
 `.COMPILER_IGNORE`
 
@@ -46,17 +53,17 @@ Flags elements to be ignored when compiling js, css, or package.
 
 Flags elements that need to be combined using the `COMPILER.combine()` utility.
 
-# limitations
+### limitations
 
-> The code is not minified or optimized, just combined.
-> Only compile non-inline and local files.
-> Images must be appended to the document at some point before compiling in order to be added to the package.
-  *Images can be removed immediatley after. Image dynamic image data is captured using Mutation Observers.*
-> Images are saved as non-compressed png, even if the original is compressed.
+* The code is not minified or optimized, just combined.
+* Only compile non-inline and local files.
+* Images must be appended to the document at some point before compiling in order to be added to the package.
+* *Images can be removed immediatley after. Image dynamic image data is captured using Mutation Observers.*
+* Images are saved as non-compressed png, even if the original is compressed.
 
-# future
+### future
 
-> Refactor reusable compenents.
-> JS minification & optimizations via closure compiler.
-> PNG compression.
-> Service worker & PWA template.
+* Refactor reusable compenents.
+* JS minification & optimizations via closure compiler.
+* PNG compression.
+* Service worker & PWA template.
