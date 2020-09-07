@@ -63,7 +63,7 @@ A list of all compile functions are listed further in the documentation.
 
 `COMPILER.compile.package()`
 
-Generates a zip file with consolidated css, javascript, manifest & images.
+Generates a zip file with consolidated index, css, javascript, manifest & image files.
 
 `COMPILER.compile.index()`
 
